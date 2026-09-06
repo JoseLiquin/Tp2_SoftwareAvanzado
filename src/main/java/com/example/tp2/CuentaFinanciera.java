@@ -1,21 +1,78 @@
 package com.example.tp2;
 
-public class CuentaFinanciera {
-    private long CBU;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "cuentas_financieras")
+@Inheritance(strategy = InheritanceType.JOINED)
+
+public abstract class CuentaFinanciera {
+
+    @Id
+    private Long cbu; // Sin @GeneratedValue, el CBU se ingresa manualmente
+
     private String alias;
+
     protected double saldo;
+
     private String estado;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cliente_cuil")
+    private Cliente cliente;
+
+    @OneToMany(mappedBy = "cuenta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Transaccion> transacciones = new ArrayList<>();
+
+    // Constructores
     public CuentaFinanciera() {
-
     }
 
-    public long getCBU() {
-        return CBU;
+    public CuentaFinanciera(Long cbu, String alias, double saldo, String estado) {
+        this.cbu = cbu;
+        this.alias = alias;
+        this.saldo = saldo;
+        this.estado = estado;
     }
 
-    public void setCBU(long CBU) {
-        this.CBU = CBU;
+    public void depositar(double monto) {
+        if (monto > 0) {
+            this.saldo += monto;
+            System.out.println("Depósito exitoso. Nuevo saldo: " + this.saldo);
+        }
+    }
+
+
+    public abstract boolean extraer(double monto);
+
+    public void enviarTransferencia(double monto, Long cbuDestino) {
+        if (monto > this.saldo) {
+            System.out.println("Saldo insuficiente para realizar la transferencia.");
+            return;
+        }
+        this.saldo -= monto;
+        System.out.println("Transferencia exitosa de " + monto + " al CBU: " + cbuDestino);
+    }
+
+    // Getters y Setters
+    public Long getCbu() {
+        return cbu;
+    }
+
+    public void setCbu(Long cbu) {
+        this.cbu = cbu;
     }
 
     public String getAlias() {
@@ -42,31 +99,19 @@ public class CuentaFinanciera {
         this.estado = estado;
     }
 
-    public CuentaFinanciera(int CBU, String alias, float saldo, String estado) {
-        this.CBU = CBU;
-        this.alias = alias;
-        this.saldo = saldo;
-        this.estado = estado;
-    }
-    public void depositar(double saldoActual){
-
-        saldoActual =+ saldo;
-    }
-    public void extraer(double extraccion){
-
-        if(saldo < extraccion){
-            System.out.println("Saldo insufiente para extracion");
-        }else {
-            saldo = -extraccion;
-        }
-
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void enviarTransferencia(double transferir, long cbu){
-        if(transferir < saldo){
-            System.out.println("Saldo insuficiente");
-        }
-        saldo =- transferir;
-        System.out.println("Tranferencia exitosa a: "+ saldo);
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public List<Transaccion> getTransacciones() {
+        return transacciones;
+    }
+
+    public void setTransacciones(List<Transaccion> transacciones) {
+        this.transacciones = transacciones;
     }
 }
