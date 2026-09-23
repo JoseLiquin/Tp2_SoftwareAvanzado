@@ -1,41 +1,55 @@
 package com.example.tp2.model;
+import jakarta.persistence.*;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 @Entity
-@Table(name = "cliente")
 
-public class Cliente extends Auditable {
+@Table(name="clientes")
+public class Cliente extends Auditable{
+
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cuil;
+    @GeneratedValue(strategy = GenerationType.UUID) //id del cliente
+    private UUID id;
 
+    @Column(name = "nombre", nullable = false, length = 20) //columna de nombre del cliente
     private String nombre;
-    private String apellido;
-    private String email;
-    private Long telefono;
-    private String direccion;
-    private String titularidad;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.ALL}
+    @Column(name = "apellido", nullable = false, length = 20) //columna de apellido del cliente
+    private String apellido;
+
+    @Column(name = "cuil", nullable = false, unique = true, length = 12) //columna del cuil del cliente
+    private String cuil;
+
+    @Column(name = "email", nullable = false, length = 100) //columna del email del cliente
+    private String email;
+
+    @Column(name = "telefono", nullable = false, length = 9) //columna del telefono del cliente
+    private long telefono;
+
+    @Column(name = "direccion", nullable = false, length = 50) //columna de la dirrecion del cliente
+    private String direccion;
+
+    @ManyToMany
+    @JoinTable(
+            name = "cuenta_cliente",
+            joinColumns = @JoinColumn(name = "cuenta_id"),
+            inverseJoinColumns = @JoinColumn(name = "cliente_id")
     )
-    @JoinColumn(
-            name = "cliente_cuil"
-    )
+    private List<Cliente> titulares; //buscar como represantar en la base de datos
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "cliente_cuil")
     private List<CuentaFinanciera> cuentas;
 
-    public Cliente(String nombre, Long cuil, String email, Long telefono, String direccion, String apellido) {
+    //cambiar constructores por builder del spring boot
+
+
+    public Cliente(UUID id, String nombre, String apellido, String cuil, String email, long telefono, String direccion) {
+        this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cuil = cuil;
@@ -45,6 +59,15 @@ public class Cliente extends Auditable {
     }
 
     public Cliente() {
+
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -55,17 +78,19 @@ public class Cliente extends Auditable {
         this.nombre = nombre;
     }
 
-    public String getApellido(){
+    public String getApellido() {
         return apellido;
     }
 
-    public void setApellido(String apellido){ this.apellido = apellido; }
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-    public Long getCuil() {
+    public String getCuil() {
         return cuil;
     }
 
-    public void setCuil(Long cuil) {
+    public void setCuil(String cuil) {
         this.cuil = cuil;
     }
 
@@ -77,11 +102,11 @@ public class Cliente extends Auditable {
         this.email = email;
     }
 
-    public Long getTelefono() {
+    public long getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(Long telefono) {
+    public void setTelefono(long telefono) {
         this.telefono = telefono;
     }
 
@@ -93,12 +118,12 @@ public class Cliente extends Auditable {
         this.direccion = direccion;
     }
 
-    public String getTitularidad() {
-        return titularidad;
+    public List<Cliente> getTitulares() {
+        return titulares;
     }
 
-    public void setTitularidad(String titularidad) {
-        this.titularidad = titularidad;
+    public void setTitulares(List<Cliente> titulares) {
+        this.titulares = titulares;
     }
 
     public List<CuentaFinanciera> getCuentas() {
@@ -119,7 +144,7 @@ public class Cliente extends Auditable {
                 "cuil=" + cuil +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-      //          ", cantidadCuentas=" + (cuentas != null ? cuentas.size() : 0) +
+                //          ", cantidadCuentas=" + (cuentas != null ? cuentas.size() : 0) +
                 '}';
     }
 }

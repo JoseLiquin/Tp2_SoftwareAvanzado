@@ -1,33 +1,38 @@
 package com.example.tp2.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cajas_ahorro")
-@PrimaryKeyJoinColumn(name = "cbu")
+@Table(name = "cajas_ahorros")
+@PrimaryKeyJoinColumn(name = "id")
 
 public class CajaDeAhorro extends CuentaFinanciera {
-
+    @Column(name= "cupoLimite",nullable=false,length=10) //columna cupo limite
     private int cupoLimite;
+
+    @Column(name= "interesAnual",nullable=false,length=20)//columna interes anual
     private double interesAnual;
+
+    @Column (name= "extraccionesRealizadas",nullable=false,length=1)//columna extraccion realizadas
     private int extraccionesRealizadas;
 
-    // Constructores
+    // Constructores cambiar por el build
     public CajaDeAhorro() {
         super();
     }
 
-    public CajaDeAhorro(long cbu, String alias, double saldo, String estado, int cupoLimite, double interesAnual) {
+    public CajaDeAhorro(String cbu, String alias, double saldo, EstadoCuenta estado, int cupoLimite, double interesAnual, int extraccionesRealizadas) {
         super(cbu, alias, saldo, estado);
         this.cupoLimite = cupoLimite;
         this.interesAnual = interesAnual;
-        this.extraccionesRealizadas = 0;
+        this.extraccionesRealizadas = extraccionesRealizadas;
     }
 
     @Override
-
+//metodo de extraccion heredado de cuenta financiera
     public boolean extraer(double monto) {
         if (this.saldo < monto) {
             System.out.println("Extracción rechazada: Saldo insuficiente.");
@@ -43,6 +48,7 @@ public class CajaDeAhorro extends CuentaFinanciera {
         return true;
     }
 
+//metodo de calculo de interes
     public void calcularInteres() {
         double montoInteres = this.saldo * (this.interesAnual / 100);
         this.saldo += montoInteres;
@@ -55,6 +61,8 @@ public class CajaDeAhorro extends CuentaFinanciera {
     }
 
     // Getters y Setters
+
+
     public int getCupoLimite() {
         return cupoLimite;
     }

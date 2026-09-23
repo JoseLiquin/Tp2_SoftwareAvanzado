@@ -1,37 +1,56 @@
 package com.example.tp2.model;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.Temporal;
-
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "transacciones")
-public class Transaccion extends Auditable {
+@Table(name="transacciones")
+public class Transaccion extends Auditable{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long nroComprobante;
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID) //columna del nruo de comprobante
+    private UUID nroComprobante;
+
+    @Column(nullable = false)//columna de la fecha
     private Date fecha;
-    @Column(nullable = false)
+
+    @Column(nullable = false)//columna de la hora
     private LocalTime hora;
+
+    @Column(name = "monto", nullable = false)//columna del monto
     private double monto;
 
-    private String tipo;
-    private String estadoTransaccion;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)//columna del tipo
+    private TipoTrasnsaccion tipo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoTransaccion estadoTransaccion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cuenta_cbu", nullable = false)
     private CuentaFinanciera cuenta;
 
-    // Constructores
+
+
+// Constructores
     public Transaccion() {
     }
 
-    public Transaccion(Long nroComprobante, Date fecha, LocalTime hora, double monto, String tipo, String estadoTransaccion, CuentaFinanciera cuenta) {
+    public Transaccion(UUID nroComprobante, Date fecha, LocalTime hora, double monto, TipoTrasnsaccion tipo, EstadoTransaccion estadoTransaccion, CuentaFinanciera cuenta) {
         this.nroComprobante = nroComprobante;
         this.fecha = fecha;
         this.hora = hora;
@@ -41,13 +60,14 @@ public class Transaccion extends Auditable {
         this.cuenta = cuenta;
     }
 
-    // Getters y Setters
+// Getters y Setters
 
-    public Long getNroComprobante() {
+
+    public UUID getNroComprobante() {
         return nroComprobante;
     }
 
-    public void setNroComprobante(Long nroComprobante) {
+    public void setNroComprobante(UUID nroComprobante) {
         this.nroComprobante = nroComprobante;
     }
 
@@ -75,19 +95,19 @@ public class Transaccion extends Auditable {
         this.monto = monto;
     }
 
-    public String getTipo() {
+    public TipoTrasnsaccion getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoTrasnsaccion tipo) {
         this.tipo = tipo;
     }
 
-    public String getEstadoTransaccion() {
+    public EstadoTransaccion getEstadoTransaccion() {
         return estadoTransaccion;
     }
 
-    public void setEstadoTransaccion(String estadoTransaccion) {
+    public void setEstadoTransaccion(EstadoTransaccion estadoTransaccion) {
         this.estadoTransaccion = estadoTransaccion;
     }
 

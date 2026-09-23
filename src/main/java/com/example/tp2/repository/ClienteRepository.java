@@ -5,8 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    Optional<Cliente> findByCuil(Long cuil);
+public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
+
+    // Buscar un cliente por su CUIL
+    Optional<Cliente> findByCuil(String cuil);
+
+    // Buscar un cliente por su email
+    Optional<Cliente> findByEmail(String email);
+
+    boolean existsByCuilOrEmail(String cuil, String email);
 }

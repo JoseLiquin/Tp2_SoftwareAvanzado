@@ -1,29 +1,32 @@
 package com.example.tp2.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "cuentas_corrientes")
-@PrimaryKeyJoinColumn(name = "cbu")
-public class CuentaCorriente extends CuentaFinanciera {
+@PrimaryKeyJoinColumn(name="id")
 
-    private double limiteDescubierto;      // Equivale al margen/descubierto autorizado
-    private double comisionMantenimiento;  // Costo o comisión asignada
+public class CuentaCorriente extends CuentaFinanciera{
 
-    // Constructores
+    @Column(name= "limiteDescubierto",nullable=false,length=10)//columna de limite
+    private double limiteDescubierto;  // Equivale al margen/descubierto autorizado
+
+    @Column(name= "comisionMantenimiento",nullable=false,length=10)//columna de la comision
+    private double comisionMantenimiento;
+
     public CuentaCorriente() {
-        super();
     }
 
-    public CuentaCorriente(Long cbu, String alias, double saldo, String estado, double limiteDescubierto, double comisionMantenimiento) {
+    public CuentaCorriente(String cbu, String alias, double saldo, EstadoCuenta estado, double comisionMantenimiento, double limiteDescubierto) {
         super(cbu, alias, saldo, estado);
-        this.limiteDescubierto = limiteDescubierto;
         this.comisionMantenimiento = comisionMantenimiento;
+        this.limiteDescubierto = limiteDescubierto;
     }
 
-    @Override
+    //metodo de extraccion heredada de cuenta finaciera
     public boolean extraer(double monto) {
         if ((this.saldo + this.limiteDescubierto) < monto) {
             System.out.println("Extracción rechazada: Supera el límite de descubierto autorizado.");
@@ -34,12 +37,14 @@ public class CuentaCorriente extends CuentaFinanciera {
         return true;
     }
 
+    //metodo del cobro de comision mensual
     public void cobrarComision() {
         this.saldo -= this.comisionMantenimiento;
         System.out.println("Comisión de mantenimiento cobrada: " + this.comisionMantenimiento + ". Nuevo saldo: " + this.saldo);
     }
 
     // Getters y Setters
+
     public double getLimiteDescubierto() {
         return limiteDescubierto;
     }

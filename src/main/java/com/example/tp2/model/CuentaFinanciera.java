@@ -1,39 +1,50 @@
 package com.example.tp2.model;
+import java.util.List;
+import java.util.UUID;
+
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-@Table(name = "cuentas_financieras")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name="cuentas_financieras")
+@Inheritance(strategy=InheritanceType.JOINED)
 
-public abstract class CuentaFinanciera extends Auditable{
+public abstract class CuentaFinanciera extends Auditable {
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cbu;
-    private String alias;
-    protected double saldo;
-    private String estado;
+    @GeneratedValue(strategy = GenerationType.UUID) //columna del id
+    private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_cuil",insertable=false,updatable=false)
+    @Column(name= "CBU",nullable=false,unique=true,length=20) //columna del cbu
+    private String cbu;
+
+    @Column(name= "alias",nullable=false,unique=true,length=15) //culumna del alias
+    private String alias;
+
+    @Column(name= "saldo",nullable=false,length=10) //columna del saldo
+    protected double saldo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado", nullable = false, length = 15)
+    private EstadoCuenta estado;
+
+    @ManyToOne(fetch =FetchType.LAZY)
+    @JoinColumn(name="cliente_cuil", insertable=false,updatable=false)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "cuenta", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Transaccion> transacciones = new ArrayList<>();
+    @OneToMany(mappedBy= "cuenta", fetch =FetchType.LAZY,cascade =CascadeType.ALL)
+    private List<Transaccion> transacciones;
 
-    // Constructores
     public CuentaFinanciera() {
+
     }
 
-    public CuentaFinanciera(Long cbu, String alias, double saldo, String estado) {
+//cambiar el constructor por el build
+    public CuentaFinanciera(String cbu, String alias, double saldo, EstadoCuenta estado) {
         this.cbu = cbu;
         this.alias = alias;
         this.saldo = saldo;
         this.estado = estado;
     }
-
+//operacion de depositar
     public void depositar(double monto) {
         if (monto > 0) {
             this.saldo += monto;
@@ -41,9 +52,10 @@ public abstract class CuentaFinanciera extends Auditable{
         }
     }
 
-
+//operacion de extraer el cual utiliza la caja de ahorro y la cuenta corriente
     public abstract boolean extraer(double monto);
 
+//operacion de enviar transferencia
     public void enviarTransferencia(double monto, Long cbuDestino) {
         if (monto > this.saldo) {
             System.out.println("Saldo insuficiente para realizar la transferencia.");
@@ -54,11 +66,20 @@ public abstract class CuentaFinanciera extends Auditable{
     }
 
     // Getters y Setters
-    public Long getCbu() {
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getCbu() {
         return cbu;
     }
 
-    public void setCbu(long cbu) {
+    public void setCbu(String cbu) {
         this.cbu = cbu;
     }
 
@@ -78,11 +99,11 @@ public abstract class CuentaFinanciera extends Auditable{
         this.saldo = saldo;
     }
 
-    public String getEstado() {
+    public EstadoCuenta getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoCuenta estado) {
         this.estado = estado;
     }
 
