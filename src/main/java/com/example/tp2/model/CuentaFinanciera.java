@@ -1,4 +1,5 @@
 package com.example.tp2.model;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,15 +21,14 @@ public abstract class CuentaFinanciera extends Auditable {
     private String alias;
 
     @Column(name= "saldo",nullable=false,length=10) //columna del saldo
-    protected double saldo;
+    protected Double    saldo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado", nullable = false, length = 15)
     private EstadoCuenta estado;
 
-    @ManyToOne(fetch =FetchType.LAZY)
-    @JoinColumn(name="cliente_cuil", insertable=false,updatable=false)
-    private Cliente cliente;
+    @ManyToMany(mappedBy = "cuentas", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Cliente> titulares = new ArrayList<>();
 
     @OneToMany(mappedBy= "cuenta", fetch =FetchType.LAZY,cascade =CascadeType.ALL)
     private List<Transaccion> transacciones;
@@ -38,7 +38,7 @@ public abstract class CuentaFinanciera extends Auditable {
     }
 
 //cambiar el constructor por el build
-    public CuentaFinanciera(String cbu, String alias, double saldo, EstadoCuenta estado) {
+    public CuentaFinanciera(String cbu, String alias, Double saldo, EstadoCuenta estado) {
         this.cbu = cbu;
         this.alias = alias;
         this.saldo = saldo;
@@ -91,11 +91,11 @@ public abstract class CuentaFinanciera extends Auditable {
         this.alias = alias;
     }
 
-    public double getSaldo() {
+    public Double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(double saldo) {
+    public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
 
@@ -107,12 +107,12 @@ public abstract class CuentaFinanciera extends Auditable {
         this.estado = estado;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public List<Cliente> getTitulares() {
+        return titulares;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setTitulares(List<Cliente> titulares) {
+        this.titulares = titulares;
     }
 
     public List<Transaccion> getTransacciones() {
@@ -123,7 +123,7 @@ public abstract class CuentaFinanciera extends Auditable {
         this.transacciones = transacciones;
     }
 
-    @Override
+   /* @Override
     public String toString() {
         return "CuentaFinanciera{" +
                 ", alias='" + alias + '\'' +
@@ -131,5 +131,5 @@ public abstract class CuentaFinanciera extends Auditable {
                 ", saldo=" + saldo +
                 ", clienteCuil=" + (cliente != null ? cliente.getCuil() : null) + //
                 '}';
-    }
+    }*/
 }

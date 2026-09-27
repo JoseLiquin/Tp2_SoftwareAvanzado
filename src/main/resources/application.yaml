@@ -3,7 +3,7 @@ spring:
     name: sistemabancario
 
   datasource:
-    url: jdbc:mysql://localhost:3306/sistema_bancario?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3307/sistema_bancario?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -10,6 +10,9 @@ import java.util.UUID;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
+    //Buscar un cliente por el nombre
+    Optional<Cliente> findByNombre(String nombre);
+
     // Buscar un cliente por su CUIL
     Optional<Cliente> findByCuil(String cuil);
 
@@ -17,4 +20,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
     Optional<Cliente> findByEmail(String email);
 
     boolean existsByCuilOrEmail(String cuil, String email);
+
+
 }

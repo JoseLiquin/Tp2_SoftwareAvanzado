@@ -41,8 +41,12 @@ public class Cliente extends Auditable{
     )
     private List<Cliente> titulares; //buscar como represantar en la base de datos
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "cliente_cuil")
+   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @JoinTable(
+           name = "cuenta_cliente",
+           joinColumns = @JoinColumn(name = "cliente_id"),
+           inverseJoinColumns = @JoinColumn(name = "cuenta_id")
+   )
     private List<CuentaFinanciera> cuentas;
 
     //cambiar constructores por builder del spring boot

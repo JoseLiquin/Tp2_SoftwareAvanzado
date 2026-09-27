@@ -8,10 +8,18 @@ import java.util.UUID;
 //model VER CLASE DE PRACTICA
 
 public interface ClienteService {
+    
     Cliente crearCliente(Cliente cliente);
+
+    Cliente obtenerPorNombre(String nombre);
+
     Cliente obtenerPorId(UUID id);
+
     Cliente obtenerPorCuil(String cuil);
+
     List <Cliente> listartodos();
+
     Cliente actualizarCliente(UUID id,Cliente detalles);
+
     void eliminarPorId(UUID id);
 }

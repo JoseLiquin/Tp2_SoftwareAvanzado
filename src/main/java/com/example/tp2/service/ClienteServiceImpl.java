@@ -1,5 +1,6 @@
 package com.example.tp2.service;
 
+import com.example.tp2.exception.RecursoNoEncontradoException;
 import com.example.tp2.model.Cliente;
 import com.example.tp2.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ClienteServiceImpl implements ClienteService{
+public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
 
@@ -43,6 +44,7 @@ public class ClienteServiceImpl implements ClienteService{
                     return new IllegalArgumentException("No existe un cliente con el ID: " + id);
                 });
     }
+
     @Override
 //	@Transactional(readOnly=true)
     public Cliente obtenerPorCuil(String cuil) {
@@ -51,9 +53,22 @@ public class ClienteServiceImpl implements ClienteService{
         return clienteRepository.findByCuil(cuil)
                 .orElseThrow(() -> {
                     log.error("No se encontró ningún cliente con CUIL: {}", cuil);
-                    return new IllegalArgumentException("No existe un cliente con el CUIL: " + cuil);
+                    return new RecursoNoEncontradoException("No existe un cliente con el CUIL: " + cuil);
                 });
     }
+
+    @Override
+    @Transactional
+    public Cliente obtenerPorNombre(String nombre) {
+        log.debug("Buscar por nombre");
+
+        return clienteRepository.findByNombre(nombre)
+                .orElseThrow(() -> {
+                    log.error("No se encuentra ningun Cliente");
+                    return new RecursoNoEncontradoException("Nose encuentra al cliente");
+                });
+    }
+
     @Override
     //@Transactional(readOnly=true)
     public List<Cliente> listartodos() {
@@ -63,7 +78,7 @@ public class ClienteServiceImpl implements ClienteService{
 
     @Override
     @Transactional
-    public Cliente actualizarCliente(UUID id,Cliente detalles) {
+    public Cliente actualizarCliente(UUID id, Cliente detalles) {
         log.info("Iniciando actualización de datos del cliente con ID {}", id);
 
         Cliente clienteExistente = obtenerPorId(id);
@@ -72,6 +87,7 @@ public class ClienteServiceImpl implements ClienteService{
 
         return clienteRepository.save(clienteExistente);
     }
+
 
     @Override
     @Transactional

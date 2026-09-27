@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TransaccionRepository extends JpaRepository<Transaccion, UUID> {
 
     // obtener el historial de transacciones de una cuenta por su CBU
-    List<Transaccion> findByCuentaCbu(Long cbu);
+    List<Transaccion> findByCuentaCbu(String cbu);
 
     // Buscar transacciones por estado de procesamiento
     List<Transaccion> findByEstadoTransaccion(EstadoTransaccion estadoTransaccion);
