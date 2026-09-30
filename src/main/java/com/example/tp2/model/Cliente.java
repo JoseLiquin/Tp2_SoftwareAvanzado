@@ -33,14 +33,6 @@ public class Cliente extends Auditable{
     @Column(name = "direccion", nullable = false, length = 50) //columna de la dirrecion del cliente
     private String direccion;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cuenta_cliente",
-            joinColumns = @JoinColumn(name = "cuenta_id"),
-            inverseJoinColumns = @JoinColumn(name = "cliente_id")
-    )
-    private List<Cliente> titulares; //buscar como represantar en la base de datos
-
    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinTable(
            name = "cuenta_cliente",
@@ -120,14 +112,6 @@ public class Cliente extends Auditable{
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public List<Cliente> getTitulares() {
-        return titulares;
-    }
-
-    public void setTitulares(List<Cliente> titulares) {
-        this.titulares = titulares;
     }
 
     public List<CuentaFinanciera> getCuentas() {

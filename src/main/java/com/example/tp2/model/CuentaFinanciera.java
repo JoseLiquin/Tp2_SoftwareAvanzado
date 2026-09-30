@@ -17,7 +17,7 @@ public abstract class CuentaFinanciera extends Auditable {
     @Column(name= "CBU",nullable=false,unique=true,length=20) //columna del cbu
     private String cbu;
 
-    @Column(name= "alias",nullable=false,unique=true,length=15) //culumna del alias
+    @Column(name= "alias",nullable=false,unique=true,length=50) //culumna del alias
     private String alias;
 
     @Column(name= "saldo",nullable=false,length=10) //columna del saldo
