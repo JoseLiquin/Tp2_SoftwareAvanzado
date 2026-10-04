@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,6 +21,7 @@ import java.util.Date;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableAsync
 public class Tp2Application {
 
     public static void main(String[] args) {

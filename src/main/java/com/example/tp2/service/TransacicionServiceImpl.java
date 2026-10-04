@@ -25,27 +25,29 @@ public class TransacicionServiceImpl implements TransaccionService {
     private final CuentaFinancieraService cuentaService;
     private final CuentaFinancieraRepository cuentaRepository;
     private final TransaccionRepository transaccionRepository;
-
+//modularizar los metodos
     @Override
     @Transactional
     public TransferenciaResponseDto transferir(String cbuOrigen, String cbuDestino, Double monto) {
         log.info("Iniciando transferencia de {} desde CBU: {} hacia CBU: {}", monto, cbuOrigen, cbuDestino);
 
-        // Obtenemos las entidades usando el servicio
+        // obtenemos las entidades del servicio
         CuentaFinanciera origen = cuentaService.obtenerEntidadPorCbu(cbuOrigen);
         CuentaFinanciera destino = cuentaService.obtenerEntidadPorCbu(cbuDestino);
 
         boolean extraccionExitosa = origen.extraer(monto);
+        //controla si hay saldo para transferir
         if (!extraccionExitosa) {
             log.error("Fallo en la transferencia: Saldo insuficiente o límite excedido para la cuenta {}", cbuOrigen);
             throw new SaldoInsuficienteException("Saldo insuficiente o límite de extracción superado para realizar la transferencia.");
         }
 
         destino.depositar(monto);
-
+        //guardamos los origne y destino correspondiente
         cuentaRepository.save(origen);
         cuentaRepository.save(destino);
 
+        //registrar la salida y recepcion de la transf.
         Transaccion transaccionEnviada = new Transaccion();
         transaccionEnviada.setFecha(new Date());
         transaccionEnviada.setHora(LocalTime.now());
@@ -64,8 +66,9 @@ public class TransacicionServiceImpl implements TransaccionService {
         transaccionRecibida.setCuenta(destino);
         transaccionRepository.save(transaccionRecibida);
 
+        //mensaje de operacion existosa
         log.info("Transferencia completada exitosamente entre CBU {} y CBU {}", cbuOrigen, cbuDestino);
-
+        //devuelve en forma de response dto
         return TransferenciaResponseDto.builder()
                 .nroComprobante(transaccionEnviada.getNroComprobante() != null ? transaccionEnviada.getNroComprobante() : UUID.randomUUID())
                 .cbuOrigen(cbuOrigen)

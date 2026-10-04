@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,7 +17,19 @@ public class CuentaResponseDto {
     private String alias;
     private Double saldo;
     private EstadoCuenta estado;
-    private String titular;
-    private String nombreTitular;
-    private String cuilTitular;
+
+    // Titular principal (el primero)
+    private TitularDto titularPrincipal;
+
+    // Lista de cotitulares (del segundo en adelante)
+    private List<TitularDto> cotitulares;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TitularDto {
+        private String nombreCompleto;
+        private String cuil;
+    }
 }

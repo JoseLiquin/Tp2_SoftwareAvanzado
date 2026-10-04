@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class TransactionController {
 
     private final TransaccionService transaccionService;
-
+    //metodo de transferir
     @PostMapping("/transferir")
     public ResponseEntity<TransferenciaResponseDto> transferir(@Valid @RequestBody TransferenciaRequestDto requestDto) {
         TransferenciaResponseDto response = transaccionService.transferir(
