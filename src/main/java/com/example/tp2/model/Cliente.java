@@ -1,13 +1,15 @@
 package com.example.tp2.model;
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 
 @Entity
-
+@Data
 @Table(name="clientes")
 public class Cliente extends Auditable{
 
@@ -33,13 +35,13 @@ public class Cliente extends Auditable{
     @Column(name = "direccion", nullable = false, length = 50) //columna de la dirrecion del cliente
     private String direccion;
 
-    @ManyToMany
-    @JoinTable(
-            name = "cuenta_cliente",
-            joinColumns = @JoinColumn(name = "cuenta_id"),
-            inverseJoinColumns = @JoinColumn(name = "cliente_id")
-    )
-    private List<Cliente> titulares; //buscar como represantar en la base de datos
+    // Agrega estos campos a tu entidad Cliente.java
+    @Enumerated(EnumType.STRING)
+    private EstadoCliente estado = EstadoCliente.PENDIENTE_ACTIVACION;
+
+    private String tokenActivacion;
+
+    private LocalDateTime tokenExpiracion;
 
    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinTable(
@@ -120,14 +122,6 @@ public class Cliente extends Auditable{
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
-    }
-
-    public List<Cliente> getTitulares() {
-        return titulares;
-    }
-
-    public void setTitulares(List<Cliente> titulares) {
-        this.titulares = titulares;
     }
 
     public List<CuentaFinanciera> getCuentas() {

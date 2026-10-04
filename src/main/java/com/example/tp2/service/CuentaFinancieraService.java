@@ -1,9 +1,15 @@
 package com.example.tp2.service;
 
+import com.example.tp2.dto.CuentaRequestDto;
+import com.example.tp2.dto.CuentaResponseDto;
 import com.example.tp2.model.CuentaFinanciera;
 
-public interface CuentaFinancieraService {
-    CuentaFinanciera crearCuenta(CuentaFinanciera cuenta);
+import java.util.UUID;
 
-    CuentaFinanciera obtenerPorCbu(String cbu);
+public interface CuentaFinancieraService {
+    CuentaResponseDto crearCuenta(CuentaRequestDto requestDto);
+    CuentaResponseDto obtenerPorCbu(String cbu);
+
+    CuentaFinanciera obtenerEntidadPorCbu(String cbu);
+    void agregarTitular(String cbu, UUID clienteId);
 }

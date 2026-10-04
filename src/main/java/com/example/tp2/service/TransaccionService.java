@@ -1,6 +1,8 @@
 package com.example.tp2.service;
 
+import com.example.tp2.dto.TransferenciaResponseDto;
+
 public interface TransaccionService {
 
-    void transferir(String cbuOrigen, String cbuDestino, Double monto);
+    TransferenciaResponseDto transferir(String cbuOrigen, String cbuDestino, Double monto);
 }

@@ -1,5 +1,6 @@
 package com.example.tp2.service;
 
+import com.example.tp2.dto.TransferenciaResponseDto;
 import com.example.tp2.exception.SaldoInsuficienteException;
 import com.example.tp2.model.CuentaFinanciera;
 import com.example.tp2.model.EstadoTransaccion;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,32 +24,30 @@ public class TransacicionServiceImpl implements TransaccionService {
 
     private final CuentaFinancieraService cuentaService;
     private final CuentaFinancieraRepository cuentaRepository;
-    private final TransaccionRepository transaccionRepository; // Inyectamos el repositorio de transacciones
-
+    private final TransaccionRepository transaccionRepository;
+//modularizar los metodos
     @Override
-    @Transactional // ¡Requerido por el TP4 para asegurar atomicidad!
-    public void transferir(String cbuOrigen, String cbuDestino, Double monto) {
+    @Transactional
+    public TransferenciaResponseDto transferir(String cbuOrigen, String cbuDestino, Double monto) {
         log.info("Iniciando transferencia de {} desde CBU: {} hacia CBU: {}", monto, cbuOrigen, cbuDestino);
 
-        // valida la existencia
-        CuentaFinanciera origen = cuentaService.obtenerPorCbu(cbuOrigen);
-        CuentaFinanciera destino = cuentaService.obtenerPorCbu(cbuDestino);
+        // obtenemos las entidades del servicio
+        CuentaFinanciera origen = cuentaService.obtenerEntidadPorCbu(cbuOrigen);
+        CuentaFinanciera destino = cuentaService.obtenerEntidadPorCbu(cbuDestino);
 
-        // extraccion
         boolean extraccionExitosa = origen.extraer(monto);
+        //controla si hay saldo para transferir
         if (!extraccionExitosa) {
             log.error("Fallo en la transferencia: Saldo insuficiente o límite excedido para la cuenta {}", cbuOrigen);
             throw new SaldoInsuficienteException("Saldo insuficiente o límite de extracción superado para realizar la transferencia.");
         }
 
-        //Depositar en la cuenta
         destino.depositar(monto);
-
-        //guardar los cambios realizados
+        //guardamos los origne y destino correspondiente
         cuentaRepository.save(origen);
         cuentaRepository.save(destino);
 
-        //registrar el cambio realizado
+        //registrar la salida y recepcion de la transf.
         Transaccion transaccionEnviada = new Transaccion();
         transaccionEnviada.setFecha(new Date());
         transaccionEnviada.setHora(LocalTime.now());
@@ -66,7 +66,17 @@ public class TransacicionServiceImpl implements TransaccionService {
         transaccionRecibida.setCuenta(destino);
         transaccionRepository.save(transaccionRecibida);
 
+        //mensaje de operacion existosa
         log.info("Transferencia completada exitosamente entre CBU {} y CBU {}", cbuOrigen, cbuDestino);
+        //devuelve en forma de response dto
+        return TransferenciaResponseDto.builder()
+                .nroComprobante(transaccionEnviada.getNroComprobante() != null ? transaccionEnviada.getNroComprobante() : UUID.randomUUID())
+                .cbuOrigen(cbuOrigen)
+                .cbuDestino(cbuDestino)
+                .monto(monto)
+                .estadoTransaccion(EstadoTransaccion.COMPLETADA)
+                .fecha(transaccionEnviada.getFecha())
+                .hora(transaccionEnviada.getHora())
+                .build();
     }
 }
-
