@@ -2,6 +2,8 @@ package com.example.tp2.repository;
 
 import com.example.tp2.model.CuentaFinanciera;
 import com.example.tp2.model.EstadoCuenta;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +27,8 @@ public interface CuentaFinancieraRepository extends JpaRepository<CuentaFinancie
     List<CuentaFinanciera> findByEstado(EstadoCuenta estado);
 
     // buscar cuentas asociadas al CUIL de un titular
-    List<CuentaFinanciera> findByTitulares_Cuil(String cuil);;
+    List<CuentaFinanciera> findByTitulares_Cuil(String cuil);
+
+    //consultar cuantas por estados utilizando paginacion
+    Slice<CuentaFinanciera> findByEstado(EstadoCuenta estadoCuenta, Pageable pageable);
 }
