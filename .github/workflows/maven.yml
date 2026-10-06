@@ -20,14 +20,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Maven
-      working-directory: ./TP2   # <--- Cambia esto según la carpeta donde tengas el pom.xml
       run: mvn clean package
       env:
         EMAIL: ${{ secrets.EMAIL }}
         PASS: ${{ secrets.PASS }}
-
-      - name: Build with Maven
-        run: mvn clean package
-        env:
-          EMAIL: ${{ secrets.EMAIL }}
-          PASS: ${{ secrets.PASS }}
