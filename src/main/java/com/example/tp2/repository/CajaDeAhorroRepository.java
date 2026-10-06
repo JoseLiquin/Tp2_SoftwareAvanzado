@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface CajaDeAhorroRepository extends JpaRepository<CajaDeAhorro, UUID> {
 
     // Buscar cajas de ahorro cuyo cupo límite de extracciones sea mayor al indicado
-    List<CajaDeAhorro> findByCupoLimiteGreaterThan(int cupoLimite);
+    List<CajaDeAhorro> findByCbu(int cupoLimite);
 
     // Buscar cajas de ahorro por tasa de interés anual exacta
     List<CajaDeAhorro> findByInteresAnual(double interesAnual);
