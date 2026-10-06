@@ -21,5 +21,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
     boolean existsByCuilOrEmail(String cuil, String email);
 
-
+    Optional<Cliente> findByTokenActivacion(String token);
 }
