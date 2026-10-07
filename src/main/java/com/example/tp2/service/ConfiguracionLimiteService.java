@@ -5,7 +5,6 @@ package com.example.tp2.service;
  */
 import com.example.tp2.dto.ConfiguracionLimiteRequestDto;
 import com.example.tp2.dto.ConfiguracionLimiteResponseDto;
-
 import java.util.List;
 
 public interface ConfiguracionLimiteService {

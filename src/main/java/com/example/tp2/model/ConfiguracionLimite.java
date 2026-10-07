@@ -23,9 +23,8 @@ public class ConfiguracionLimite {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private TipoUsuarioLimite tipoUsuario;
+    private TipoUsuarioLimite tipoUsuario; // TITULAR o ADHERENTE
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal montoMaximoDiario;
 }
-
