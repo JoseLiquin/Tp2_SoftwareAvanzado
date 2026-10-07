@@ -22,7 +22,9 @@ public class ConfiguracionLimiteServiceImpl implements ConfiguracionLimiteServic
     @Transactional
     public ConfiguracionLimiteResponseDto guardar(ConfiguracionLimiteRequestDto dto) {
         ConfiguracionLimite config = repository.findByTipoUsuario(dto.getTipoUsuario())
-                .orElseGet(() -> ConfiguracionLimite.builder().tipoUsuario(dto.getTipoUsuario()).build());
+                .orElseGet(() -> ConfiguracionLimite.builder()
+                        .tipoUsuario(dto.getTipoUsuario())
+                        .build());
 
         config.setMontoMaximoDiario(dto.getMontoMaximoDiario());
         ConfiguracionLimite guardada = repository.save(config);
@@ -34,7 +36,9 @@ public class ConfiguracionLimiteServiceImpl implements ConfiguracionLimiteServic
     @Override
     @Transactional(readOnly = true)
     public List<ConfiguracionLimiteResponseDto> listar() {
-        return repository.findAll().stream().map(this::mapear).toList();
+        return repository.findAll().stream()
+                .map(this::mapear)
+                .toList();
     }
 
     private ConfiguracionLimiteResponseDto mapear(ConfiguracionLimite c) {

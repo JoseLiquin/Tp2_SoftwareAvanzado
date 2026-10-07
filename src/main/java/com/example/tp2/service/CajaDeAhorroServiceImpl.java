@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CuentaAhorroServiceImpl implements CuentaAhorroService {
+public class CajaDeAhorroServiceImpl implements CajaDeAhorroService {
 
     private final CuentaFinancieraRepository cuentaRepository;
     private final ConfiguracionLimiteRepository configuracionLimiteRepository;
