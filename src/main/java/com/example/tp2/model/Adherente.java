@@ -31,7 +31,7 @@ public class Adherente {
     private ParentescoAdherente parentesco;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "cuenta_id", nullable = false)
     private CajaDeAhorro cuenta;
 }
 

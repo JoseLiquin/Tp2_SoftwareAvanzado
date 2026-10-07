@@ -33,6 +33,7 @@ public abstract class CuentaFinanciera extends Auditable {
     @OneToMany(mappedBy= "cuenta", fetch =FetchType.LAZY,cascade =CascadeType.ALL)
     private List<Transaccion> transacciones;
 
+
     public CuentaFinanciera() {
 
     }

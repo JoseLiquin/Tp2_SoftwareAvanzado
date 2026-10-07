@@ -13,7 +13,6 @@ import java.util.UUID;
 public interface CuentaFinancieraRepository extends JpaRepository<CuentaFinanciera, UUID> {
 
     // buscar todas las cuentas asociadas al CUIL de un cliente
-    Optional<CuentaFinanciera> findByClienteCuil(String cuil);
 
     //buscar todas las cuentas asociadas por el cbu de un cliente
     Optional<CuentaFinanciera> findByCbu(String cbu);
